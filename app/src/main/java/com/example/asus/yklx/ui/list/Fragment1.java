@@ -32,6 +32,7 @@ public class Fragment1 extends BaseFragment<MobilePresenter> implements MobileCo
     private XRVAdapter xrvAdapter;
     private int  page=1;
     private boolean  flag=true;
+    private List<MobileBean.NewslistBean> newslist =new ArrayList<>();
 //    @Nullable
 //    @Override
 //    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,21 +61,24 @@ public class Fragment1 extends BaseFragment<MobilePresenter> implements MobileCo
         mXrv = (XRecyclerView) view.findViewById(R.id.xrv);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mXrv.setLayoutManager(linearLayoutManager);
+        xrvAdapter = new XRVAdapter(getContext(), newslist);
+        mXrv.setAdapter(xrvAdapter);
+
         mPresenter.Mobile("71e58b5b2f930eaf1f937407acde08fe","10",page+"");
         mXrv.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
                 //刷新
-                flag=true;
                 page=1;
+                flag=true;
                 mPresenter.Mobile("71e58b5b2f930eaf1f937407acde08fe","10",page+"");
             }
 
             @Override
             public void onLoadMore() {
                 //加载更多
-                flag=false;
                 page++;
+                flag=false;
                 mPresenter.Mobile("71e58b5b2f930eaf1f937407acde08fe","10",page+"");
 
 
@@ -86,18 +90,14 @@ public class Fragment1 extends BaseFragment<MobilePresenter> implements MobileCo
     public void MobileSuccess(MobileBean mobileBean) {
 
         List<MobileBean.NewslistBean> newslist = mobileBean.getNewslist();
-        ArrayList<MobileBean.NewslistBean> templist = new ArrayList<>();
-        templist.addAll(newslist);
 
         if (flag){
-            xrvAdapter = new XRVAdapter(getContext(), newslist);
-            mXrv.setAdapter(xrvAdapter);
-            xrvAdapter.shuxin(templist);
+            xrvAdapter.shuxin(newslist);
             mXrv.refreshComplete();//设置刷新完成
 
         }else {
             if (xrvAdapter!=null){
-                xrvAdapter.jiazai(templist);
+                xrvAdapter.jiazai(newslist);
                 mXrv.loadMoreComplete();
             }
         }

@@ -64,7 +64,7 @@ public class XRVAdapter extends RecyclerView.Adapter {
         }
     }
     public void shuxin(List<MobileBean.NewslistBean> templist){
-//        this.list.clear();
+        this.list.clear();
         this.list.addAll(templist);
         notifyDataSetChanged();
 
